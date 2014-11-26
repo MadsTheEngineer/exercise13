@@ -10,7 +10,7 @@ namespace Exercise13
     {
         static void Main(string[] args)
         {
-            var link = new Link(1000);
+            var link = new LinkLayer(1000);
             while (true)
             {
                 string toSendString = Console.ReadLine();
