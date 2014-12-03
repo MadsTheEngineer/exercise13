@@ -32,6 +32,7 @@ namespace Exercise13
         private LinkLayer link;
         private Checksum checksum = new Checksum();
         private byte[] buffer;
+        private int payloadsize = 1000;
         private byte seqNo;
         private byte old_seqNo;
         private int errorCount;
@@ -50,6 +51,25 @@ namespace Exercise13
             {
                 link.Send(buffer, buffer.Length);
             } while (!ReceiveAck());
+        }
+
+        public int Receive(ref byte[] payloadBuffer)
+        {
+            int size;
+            while (true)
+            {
+                buffer = new byte[payloadsize+4];
+                link = new LinkLayer(1000);
+                size = link.Receive(ref buffer);
+                if (checksum.checkChecksum(buffer, size))
+                {
+                    Array.Copy(buffer,4,payloadBuffer,0,buffer.Length-4);
+                    SendAck(true);
+                    break;
+                }
+                SendAck(false);
+            }
+            return size;
         }
         
         private void SendAck(bool ackType)

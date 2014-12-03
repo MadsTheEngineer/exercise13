@@ -12,16 +12,10 @@ namespace Exercise13
         {
             var transportLayer = new TransportLayer();
             //var link = new LinkLayer(1000);
-            while (true)
-            {
-                string toSendString = Console.ReadLine();
-                var toSend = new byte[toSendString.Length];
-                toSend = Encoding.ASCII.GetBytes(toSendString);
-                //link.Send(toSend, toSend.Length);
-
-                transportLayer.Send(toSend,toSend.Length);
-            }
-            
+            var buf = new byte[1000];
+            transportLayer.Receive(ref buf);
+            Console.WriteLine(Encoding.ASCII.GetString(buf));
+            Console.ReadLine();
         }
     }
 }
