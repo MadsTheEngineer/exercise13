@@ -24,9 +24,8 @@ namespace Exercise13
         public void Send(byte[] data, int size)
         {
             _buffer = new byte[(size * 2) + 2];   
-            Slip(data);
+            EncodeSlip(data);
             _serialPort.Write(_buffer, 0, _buffer.Length);
-            
         }
 
         public int Receive(ref byte[] buf)
@@ -48,7 +47,7 @@ namespace Exercise13
             return buf.Length;
         }
 
-        private void Slip(byte[] original)
+        private void EncodeSlip(byte[] original)
         {
             _buffer[0] = Delimiter;
             int bufferIndex = 0;
