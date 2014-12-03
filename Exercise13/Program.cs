@@ -18,10 +18,8 @@ namespace Exercise13
                 var toSend = new byte[toSendString.Length];
                 toSend = Encoding.ASCII.GetBytes(toSendString);
                 //link.Send(toSend, toSend.Length);
-
                 transportLayer.Send(toSend,toSend.Length);
             }
-            
         }
     }
 }
