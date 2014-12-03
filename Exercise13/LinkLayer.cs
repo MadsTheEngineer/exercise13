@@ -15,7 +15,6 @@ namespace Exercise13
 
         public LinkLayer(int bufferSize)
         {
-            _buffer = new byte[(bufferSize * 2) + 2];
             _serialPort = new SerialPort("COM3", 115200, Parity.None, 8, StopBits.One);
 
             if (!_serialPort.IsOpen)
@@ -24,26 +23,29 @@ namespace Exercise13
 
         public void Send(byte[] data, int size)
         {
+            _buffer = new byte[(size * 2) + 2];   
             Slip(data);
             _serialPort.Write(_buffer, 0, _buffer.Length);
+            
         }
 
         public int Receive(ref byte[] buf)
         {
+            _buffer = new byte[(buf.Length * 2) + 2];   
             int counter = 0;
 
             while (_buffer[0] != Delimiter)
             {
-                _buffer[counter++] = (byte)_serialPort.ReadByte();
+                _buffer[0] = (byte)_serialPort.ReadByte();
             }
 
-            while (_buffer[counter - 1] != Delimiter)
+            do
             {
-                _buffer[counter++] = (byte)_serialPort.ReadByte();
-            }
+                _buffer[++counter] = (byte) _serialPort.ReadByte();
+            } while (_buffer[counter] != Delimiter);
 
             DecodeSLIP(ref buf);
-            return _serialPort.BytesToRead;
+            return buf.Length;
         }
 
         private void Slip(byte[] original)
