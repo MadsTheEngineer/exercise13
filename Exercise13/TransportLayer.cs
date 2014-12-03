@@ -44,6 +44,7 @@ namespace Exercise13
 
         public void Send(byte[] payloadBuffer, int size)
         {
+            int counter = 0;
             buffer = new byte[size+4];
             payloadBuffer.CopyTo(buffer, 4);
             buffer[(int)TransCHKSUM.SEQNO] = seqNo;
@@ -52,7 +53,16 @@ namespace Exercise13
 
             do
             {
+                if (counter == 0)
+                {
+                    buffer[4]++;
+                }
+                else if (counter == 1)
+                {
+                    buffer[4]--;
+                }
                 link.Send(buffer, buffer.Length);
+                counter++;
             } while (!ReceiveAck());
         }
 
@@ -90,13 +100,16 @@ namespace Exercise13
             byte[] buf = new byte[(int)TransSize.ACKSIZE];
             int size = link.Receive(ref buf);
             if (size != (int)TransSize.ACKSIZE) return false;
-            if (!checksum.checkChecksum(buf, (int)TransSize.ACKSIZE) ||
-                    buf[(int)TransCHKSUM.SEQNO] == seqNo ||
-                    buf[(int)TransCHKSUM.TYPE] != (int)TransType.ACK)
+            if (!checksum.checkChecksum(buf, (int) TransSize.ACKSIZE) ||
+                buf[(int) TransCHKSUM.SEQNO] == seqNo ||
+                buf[(int) TransCHKSUM.TYPE] != (int) TransType.ACK)
+            {
+                Console.WriteLine("Error occured in receive ACK!");
                 return false;
-
+            }
             seqNo = buf[(int)TransCHKSUM.SEQNO];
 
+            Console.WriteLine("Correct ACK received!");
             return true;
         }
 

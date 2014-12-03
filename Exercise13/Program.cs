@@ -18,7 +18,6 @@ namespace Exercise13
                 Console.WriteLine("1) Send Mode");
                 Console.WriteLine("2) Receive Mode");
                 Console.WriteLine("ESC) Quit");
-                Console.WriteLine();
 
                 ConsoleKeyInfo choice = Console.ReadKey();
 
@@ -27,6 +26,7 @@ namespace Exercise13
 
                 if (choice.KeyChar == '1')
                 {
+                    Console.WriteLine();
                     Console.WriteLine("Enter string to send. Finish with <ENTER>");
                     string toSendString = Console.ReadLine();
                     var toSend = new byte[toSendString.Length];
@@ -36,6 +36,7 @@ namespace Exercise13
 
                 if (choice.KeyChar == '2')
                 {
+                    Console.WriteLine();
                     Console.WriteLine("Waiting for message...");
                     var buf = new byte[1000];
                     transportLayer.Receive(ref buf);
