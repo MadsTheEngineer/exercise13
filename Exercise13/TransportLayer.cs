@@ -75,6 +75,7 @@ namespace Exercise13
                 size = link.Receive(ref buffer);
                 if (checksum.checkChecksum(buffer, size))
                 {
+                    payloadBuffer = new byte[FindEscapeChar(buffer) - 4];
                     Array.Copy(buffer,4,payloadBuffer,0,FindEscapeChar(buffer)-4);
                     SendAck(true);
                     break;
@@ -86,7 +87,7 @@ namespace Exercise13
 
         public int FindEscapeChar(byte[] receiveBuffer)
         {
-            for (int i = 0; i < receiveBuffer.Length; i++)
+            for (int i = 4; i < receiveBuffer.Length; i++)
             {
                 if (receiveBuffer[i] == 0)
                     return i;
