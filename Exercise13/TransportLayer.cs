@@ -75,15 +75,25 @@ namespace Exercise13
                 size = link.Receive(ref buffer);
                 if (checksum.checkChecksum(buffer, size))
                 {
-                    Array.Copy(buffer,4,payloadBuffer,0,buffer.Length-4);
+                    Array.Copy(buffer,4,payloadBuffer,0,FindEscapeChar(buffer)-4);
                     SendAck(true);
                     break;
                 }
                 SendAck(false);
             }
-            return size;
+            return payloadBuffer.Length;
         }
-        
+
+        public int FindEscapeChar(byte[] receiveBuffer)
+        {
+            for (int i = 0; i < receiveBuffer.Length; i++)
+            {
+                if (receiveBuffer[i] == 0)
+                    return i;
+            }
+            return receiveBuffer.Length;
+        }
+
         private void SendAck(bool ackType)
         {
             byte[] ackBuf = new byte[(int)TransSize.ACKSIZE];
